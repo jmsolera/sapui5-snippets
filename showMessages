@@ -1,0 +1,71 @@
+		showMessages: function (oReturn) {
+			var that = this;
+// oReturn is an array with some fields of BAPIRET2 structure. The fields are: Type, Id, Number, Message
+
+			var oMessageTemplate = new sap.m.MessageItem({
+				type: {
+					parts: ["Type"],
+					formatter: function (sType) {
+						switch (sType) {
+						case "E":
+							return sap.ui.core.MessageType.Error;
+						case "W":
+							return sap.ui.core.MessageType.Warning;
+						case "S":
+							return sap.ui.core.MessageType.Success;
+						}
+						return sap.ui.core.MessageType.None;
+					}
+				},
+				title: "{Message}"
+			});
+
+			var oBackButton = new sap.m.Button({
+				icon: sap.ui.core.IconPool.getIconURI("nav-back"),
+				visible: false,
+				press: function () {
+					that.oMessageView.navigateBack();
+					this.setVisible(false);
+				}
+			});
+
+			this.oMessageView = new sap.m.MessageView({
+				showDetailsPageHeader: false,
+				itemSelect: function () {
+					oBackButton.setVisible(true);
+				},
+				items: {
+					path: "/",
+					template: oMessageTemplate
+				}
+			});
+
+			var oModel = new sap.ui.model.json.JSONModel();
+			oModel.setData(oReturn);
+			this.oMessageView.setModel(oModel);
+
+			this.oDialog = new sap.m.Dialog({
+				resizable: true,
+				content: this.oMessageView,
+				beginButton: new sap.m.Button({
+					press: function (oEvent) {
+						this.getParent().close();
+					},
+					text: "Close"
+				}),
+				customHeader: new sap.m.Bar({
+					contentMiddle: [
+						new sap.m.Text({
+							text: "Mensajes"
+						})
+					],
+					contentLeft: [oBackButton]
+				}),
+				contentHeight: "300px",
+				contentWidth: "500px",
+				verticalScrolling: false
+			});
+
+			this.oMessageView.navigateBack();
+			this.oDialog.open();
+		}
