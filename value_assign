@@ -1,0 +1,10 @@
+// Diferents ways to assign value to a SAPUI5 XML control
+
+// Direct:
+<m:Text text="{data>Importe} {data>Waers}" wrapping="false"/>
+
+// Path:
+<m:Text text="{path: 'data>MPagoDesc',formatter: '.formatter.lowerCaseMPagoDesc'}" tooltip="{data>MPagoDesc}" wrapping="true"/>
+
+// Parts:
+<m:Link text="{parts: ['data>Telefono', 'i18n>label.sinTelefono'], formatter: '.formatter.formatTelefono'}" tooltip="{data>ClientCode}" wrapping="false" press=".onPressButtonInfoCliente"/>
